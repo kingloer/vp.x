@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>v.p.x</title>
-    <!-- Load Tailwind CSS for utility classes -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Use Inter font -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
         body {
@@ -34,14 +32,11 @@
 <body>
 
     <div id="video-container" class="relative">
-        <video id="video-player" loop autoplay muted playsinline class="rounded-none"></video>
+        <video id="video-player" loop autoplay playsinline class="rounded-none"></video>
 
-        <!-- Startup instruction box -->
         <div id="message-box" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-6 bg-gray-900/80 text-white text-xl font-bold rounded-xl shadow-2xl transition-opacity duration-500 opacity-0 pointer-events-none text-center border-2 border-white/50">
-            <!-- Message will be inserted here by JavaScript -->
-        </div>
+            </div>
 
-        <!-- Video index indicator -->
         <div id="index-indicator" class="absolute bottom-6 right-6 p-2 bg-gray-900/50 text-white text-sm font-medium rounded-full">
             Video 1/4
         </div>
@@ -125,11 +120,15 @@
 
             currentVideoIndex = index;
             videoElement.src = videoSources[currentVideoIndex];
+            
+            // MODIFICATION 2: Set volume to full (1.0) and explicitly unmute
+            videoElement.volume = 1.0; 
+            videoElement.muted = false; 
 
             // Update UI indicator
             indexIndicator.textContent = `Video ${currentVideoIndex + 1}/${videoSources.length}`;
 
-            // Load and attempt to play silently
+            // Load and attempt to play 
             videoElement.load();
             videoElement.play().catch(error => {
                 console.warn("Autoplay prevented:", error);
@@ -172,6 +171,8 @@
             handleFirstInteraction(); // Hide message on first tap
 
             if (videoElement.paused) {
+                // When playing after a user tap, the video should have sound
+                videoElement.muted = false;
                 videoElement.play().catch(e => console.error("Play error:", e));
             } else {
                 videoElement.pause();
@@ -182,7 +183,7 @@
         // --- Initialization ---
 
         window.onload = function() {
-            // 1. Load the first video
+            // 1. Load the first video (which also sets the volume to 1.0)
             loadVideo(0);
 
             // 2. Display the instructions
@@ -192,5 +193,3 @@
     </script>
 </body>
 </html>
-
-
